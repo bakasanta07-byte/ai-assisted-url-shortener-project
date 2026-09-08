@@ -1,0 +1,46 @@
+<main class="shell">
+  <header>
+    <span class="eyebrow">AI-assisted engineering prototype</span>
+    <h1>URL Shortener</h1>
+    <p>Create, redirect and inspect shortened URLs through a production-oriented Spring Boot API.</p>
+  </header>
+
+  <section class="card">
+    <form (ngSubmit)="create()">
+      <label for="longUrl">Destination URL</label>
+      <input id="longUrl" name="longUrl" [(ngModel)]="url"
+             placeholder="https://example.com/products/123" required maxlength="2048">
+
+      <label for="hours">Expiration (hours, optional)</label>
+      <input id="hours" name="hours" type="number" min="1" max="8760"
+             [(ngModel)]="hours" placeholder="24">
+
+      <button type="submit" [disabled]="loading || !url">
+        {{ loading ? 'Creating…' : 'Create short URL' }}
+      </button>
+    </form>
+  </section>
+
+  <p class="error" *ngIf="error">{{ error }}</p>
+
+  <section class="card result" *ngIf="result">
+    <div>
+      <span class="label">Short URL</span>
+      <a [href]="result.shortUrl" target="_blank" rel="noopener noreferrer">{{ result.shortUrl }}</a>
+    </div>
+    <div class="meta">
+      <span>Clicks: <strong>{{ result.clickCount }}</strong></span>
+      <span *ngIf="result.expiresAt">Expires: {{ result.expiresAt | date:'medium' }}</span>
+    </div>
+    <div class="actions">
+      <button type="button" (click)="stats()">Refresh analytics</button>
+      <button type="button" class="secondary" (click)="delete()">Delete</button>
+    </div>
+  </section>
+
+  <section class="card" *ngIf="analytics">
+    <span class="label">Analytics</span>
+    <div class="metric">{{ analytics.clickCount }}</div>
+    <span>total redirects</span>
+  </section>
+</main>
